@@ -18,4 +18,16 @@ RSpec.describe Article, type: :model do
 		expect(article.errors.messages[:content]).to include("can't be blank")
 	end
 
+	it "should validate the presence of the slug" do
+		article = FactoryBot.build :article, slug: ''
+		expect(article).not_to be_valid
+		expect(article.errors.messages[:slug]).to include("can't be blank")
+	end
+
+	it "should validate uniqueness of the slug" do
+		article = FactoryBot.create :article
+		invalid_article = FactoryBot.build :article, slug: article.slug
+		expect(invalid_article).not_to be_valid
+		expect(invalid_article.errors.messages[:slug]).to include("has already been taken")
+	end
 end
